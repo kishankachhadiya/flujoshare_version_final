@@ -8,6 +8,8 @@ class User < ApplicationRecord
   has_one :profile
   has_many :posts
   has_many :procesos
+  has_many :flow_charts, foreign_key: "approved_by_id", class_name: "User"
+
   
   has_attached_file :avatar, styles: { medium: "300x300", thumb: "100x100" }, default_url: "missing.png"
   validates_attachment_content_type :avatar, content_type: /\Aimage\/.*\Z/

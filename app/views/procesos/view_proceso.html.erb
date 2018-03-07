@@ -1,0 +1,18 @@
+<%= content_for :custome_script do %>
+  <%= javascript_include_tag 'mxClient' %>
+<% end %>
+
+
+<%= render 'procesos/nav' %>
+
+<main role="main" class="container">
+  <div class="my-3 p-3 bg-white rounded box-shadow">
+    <% if @proceso.flow_charts.last_approved.present? %>
+      <%= hidden_field_tag "", @proceso.flow_charts.last_approved.flowchart_xml, id: "flowchart_xml" %>
+      <div id="outlineContainer" style="z-index:1;position:relative;overflow:hidden;top:0px;right:0px;width:160px;height:120px;background:transparent;border-style:solid;border-color:lightgray;">
+      </div>
+    <% else %>
+      <h1>There is no accepted flow charts</h1>
+    <% end %>
+  </div>
+</main>

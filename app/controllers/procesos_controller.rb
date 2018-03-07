@@ -1,5 +1,5 @@
 class ProcesosController < ApplicationController
-  before_action :set_proceso, only: [:show, :edit, :update, :destroy]
+  before_action :set_proceso, only: [:show, :edit, :update, :destroy, :view_proceso]
 
   # GET /procesos
   # GET /procesos.json
@@ -74,7 +74,10 @@ class ProcesosController < ApplicationController
       format.json { head :no_content }
     end
   end
-  
+
+  def view_proceso
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_proceso
@@ -83,6 +86,7 @@ class ProcesosController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def proceso_params
-      params.require(:proceso).permit(:nombre, :commits, :status, :contribuidores, :version)
+      params[:proceso][:flowchart_xml] = params[:proceso][:flowchart_xml].gsub("<mxGraphModel>", '').gsub("</mxGraphModel>", '')
+      params.require(:proceso).permit(:nombre, :commits, :status, :contribuidores, :version, :flowchart_xml)
     end
 end

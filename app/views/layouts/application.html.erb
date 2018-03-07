@@ -7,7 +7,9 @@
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
     <%= favicon_link_tag 'favicon.ico' %>
-    
+    <% if content_for?(:custome_script) %>
+      <%= yield :custome_script %>
+    <% end %>
   </head>
     
   <body>
