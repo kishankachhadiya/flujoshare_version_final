@@ -10,7 +10,7 @@ class MenuController < ApplicationController
   end
 
   def procesos_flowchart_pendientes
-    @flowcharts = FlowChart.where(status: 'pending').includes(:proceso)
+    @flowcharts = FlowChart.where(status: 'solicitud de aprobacion').includes(:proceso)
   end
   
   def cambio_estado_proceso
@@ -20,7 +20,6 @@ class MenuController < ApplicationController
     else
       proceso.update_attributes(status: "Rechazado")
     end
-
     redirect_to menu_procesos_pendientes_path
   end
   

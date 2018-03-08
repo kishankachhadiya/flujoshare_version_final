@@ -16,3 +16,81 @@
     <% end %>
   </div>
 </main>
+
+
+
+
+<!-- Example code -->
+<script type="text/javascript">
+  function main()
+  {
+    mxConnectionHandler.prototype.connectImage = new mxImage("<%= asset_path('images/connector.gif') %>", 16, 16);
+
+    // Checks if browser is supported
+    if (!mxClient.isBrowserSupported())
+    {
+      mxUtils.error('Browser is not supported!', 200, false);
+    }
+    else
+    {
+      var mainContainer = document.createElement('div');
+      mainContainer.className = 'flowchart';
+
+      container = document.createElement('div');
+      container.style.position = 'absolute';
+      container.style.display = 'inline-block';
+      container.style.overflow = 'hidden';
+      container.style.verticalAlign = 'top';
+      container.style.left = '50px';
+      container.style.top = '26px';
+      container.style.right = '0px';
+      container.style.bottom = '0px';
+//      container.style.background = 'url("<%= asset_path('images/grid.gif') %>")';
+      container.style.background = '#ffffff';
+
+      mainContainer.appendChild(container);
+
+      document.body.appendChild(mainContainer);
+
+      var model = new mxGraphModel();
+      var graph = new mxGraph(container, model);
+      var undoManager = new mxUndoManager();
+      var listener = function(sender, evt)
+      {
+        undoManager.undoableEditHappened(evt.getProperty('edit'));
+      };
+      graph.getModel().addListener(mxEvent.UNDO, listener);
+      graph.getView().addListener(mxEvent.UNDO, listener);
+      graph.dropEnabled = true;
+
+      graph.popupMenuHandler.factoryMethod = function(menu, cell, evt){
+        return createPopupMenu(graph, menu, cell, evt);
+
+      };
+
+      graph.setMultigraph(false);
+
+      var keyHandler = new mxKeyHandler(graph);
+      var rubberband = new mxRubberband(graph);
+
+      var outline = document.getElementById('outlineContainer');
+      var outln = new mxOutline(graph, outline);
+
+      function loadXML() {
+        var xml = $("#flowchart_xml").val();
+        var doc = mxUtils.parseXml(xml);
+        var codec = new mxCodec(doc);
+        var elt = doc.documentElement.firstChild;
+        var cells = [];
+        while (elt != null) {
+          cells.push(codec.decodeCell(elt));
+          graph.refresh();
+          elt = elt.nextSibling;
+        }
+        graph.addCells(cells);
+      }
+      loadXML();
+    }
+  }
+  main()
+</script>

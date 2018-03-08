@@ -4,8 +4,8 @@ Rails.application.routes.draw do
   resources :profiles, only: [:edit, :update]
   resources :comentarios
   resources :flowcharts, only: :index do
-    get :accept, on: :member
-    get :reject, on: :member
+    get :aceptado, on: :member
+    get :rechazado, on: :member
   end
 
   resources :procesos do

@@ -7,6 +7,7 @@ class Proceso < ApplicationRecord
   after_update :set_flow_chart, if: Proc.new{|proceso|proceso.flowchart_xml_changed?}
 
   def set_flow_chart
+    self.flow_charts.where(status: 'solicitud de aprobacion').destroy_all
     self.flow_charts.create!
   end
 
