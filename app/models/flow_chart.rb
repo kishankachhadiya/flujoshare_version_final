@@ -6,10 +6,12 @@ class FlowChart < ApplicationRecord
 
   before_create :set_flowchart_xml
 
-  scope :last_approved, -> {where(status: "aceptado").order("approved_at DESC").first}
-
   def set_flowchart_xml
     self.flowchart_xml = self.proceso.flowchart_xml
+  end
+
+  def self.last_approved(proceso_id)
+    where(status: "aceptado", proceso_id: proceso_id).order("approved_at DESC").first
   end
 
 end
