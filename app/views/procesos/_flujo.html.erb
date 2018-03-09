@@ -60,24 +60,24 @@
 <!--//  };-->
 <!--</script>-->
 <!--<div>-->
-  <!--<textarea id="code" style="width: 100%;" rows="11">-->
-    <!--st=>start: Inicio-->
-    <!--e=>end: Fin-->
-    <!--op1=>operation: actividad1-->
-    <!--op2=>operation: actividad2-->
-    <!--sub1=>subroutine: Subproceso-->
-    <!--cond1=>condition: condicion1-->
-    <!--cond2=>condition: condicion2-->
-    <!--io=>inputoutput: comentario-->
-    <!--op3=>operation: actividad3-->
-    <!--op4=>operation: actividad4-->
+<!--<textarea id="code" style="width: 100%;" rows="11">-->
+<!--st=>start: Inicio-->
+<!--e=>end: Fin-->
+<!--op1=>operation: actividad1-->
+<!--op2=>operation: actividad2-->
+<!--sub1=>subroutine: Subproceso-->
+<!--cond1=>condition: condicion1-->
+<!--cond2=>condition: condicion2-->
+<!--io=>inputoutput: comentario-->
+<!--op3=>operation: actividad3-->
+<!--op4=>operation: actividad4-->
 
-    <!--st->op1(right)->cond1-->
-    <!--cond1(yes, right)->cond2-->
-    <!--cond1(no)->sub1(left)->op1-->
-    <!--cond2(yes)->io->op3->op4->e-->
-    <!--cond2(no)->op2->e-->
-  <!--</textarea>-->
+<!--st->op1(right)->cond1-->
+<!--cond1(yes, right)->cond2-->
+<!--cond1(no)->sub1(left)->op1-->
+<!--cond2(yes)->io->op3->op4->e-->
+<!--cond2(no)->op2->e-->
+<!--</textarea>-->
 <!--</div>-->
 <!--<div><button id="run" class="btn btn-success">Grafica flujo</button></div>-->
 <!--<div id="canvas"></div>-->
@@ -90,431 +90,434 @@
 <% end %>
 
 
-  <!-- Example code -->
-  <script type="text/javascript">
-    // Program starts here. Creates a sample graph in the
-    // DOM node with the specified ID. This function is invoked
-    // from the onLoad event handler of the document (see below).
-    function main()
+<!-- Example code -->
+<script type="text/javascript">
+  // Program starts here. Creates a sample graph in the
+  // DOM node with the specified ID. This function is invoked
+  // from the onLoad event handler of the document (see below).
+
+//  var graph;
+
+  function main()
+  {
+    // Defines an icon for creating new connections in the connection handler.
+    // This will automatically disable the highlighting of the source vertex.
+    mxConnectionHandler.prototype.connectImage = new mxImage("<%= asset_path('images/connector.gif') %>", 16, 16);
+
+    // Checks if browser is supported
+    if (!mxClient.isBrowserSupported())
     {
-      // Defines an icon for creating new connections in the connection handler.
-      // This will automatically disable the highlighting of the source vertex.
-      mxConnectionHandler.prototype.connectImage = new mxImage("<%= asset_path('images/connector.gif') %>", 16, 16);
-
-      // Checks if browser is supported
-      if (!mxClient.isBrowserSupported())
-      {
-        // Displays an error message if the browser is
-        // not supported.
-        mxUtils.error('Browser is not supported!', 200, false);
-      }
-      else
-      {
-        // Creates the div for the toolbar
+      // Displays an error message if the browser is
+      // not supported.
+      mxUtils.error('Browser is not supported!', 200, false);
+    }
+    else
+    {
+      // Creates the div for the toolbar
 
 
 
-        var mainContainer = document.createElement('div');
-        mainContainer.className = 'flowchart';
+      var mainContainer = document.createElement('div');
+      mainContainer.className = 'flowchart';
 
-        var tbContainer = document.createElement('div');
-        tbContainer.style.position = 'absolute';
-        tbContainer.style.display = 'inline-block';
-        tbContainer.style.overflow = 'hidden';
-        tbContainer.style.padding = '2px';
-        tbContainer.style.verticalAlign = 'top';
-        tbContainer.style.left = '0px';
-        tbContainer.style.top = '26px';
-        tbContainer.style.width = '46px';
-        tbContainer.style.bottom = '0px';
+      var tbContainer = document.createElement('div');
+      tbContainer.style.position = 'absolute';
+      tbContainer.style.display = 'inline-block';
+      tbContainer.style.overflow = 'hidden';
+      tbContainer.style.padding = '2px';
+      tbContainer.style.verticalAlign = 'top';
+      tbContainer.style.left = '0px';
+      tbContainer.style.top = '26px';
+      tbContainer.style.width = '46px';
+      tbContainer.style.bottom = '0px';
 
-        mainContainer.appendChild(tbContainer);
+      mainContainer.appendChild(tbContainer);
 
-        // Creates the div for the graph
-        container = document.createElement('div');
-        container.style.position = 'absolute';
-        container.style.display = 'inline-block';
-        container.style.overflow = 'hidden';
-        container.style.verticalAlign = 'top';
+      // Creates the div for the graph
+      container = document.createElement('div');
+      container.style.position = 'absolute';
+      container.style.display = 'inline-block';
+      container.style.overflow = 'hidden';
+      container.style.verticalAlign = 'top';
 //        container.style.width = calc(100% - 46);
-        container.style.left = '50px';
-        container.style.top = '26px';
-        container.style.right = '0px';
-        container.style.bottom = '0px';
-        container.style.background = 'url("<%= asset_path('images/grid.gif') %>")';
+      container.style.left = '50px';
+      container.style.top = '26px';
+      container.style.right = '0px';
+      container.style.bottom = '0px';
+      container.style.background = 'url("<%= asset_path('images/grid.gif') %>")';
 
-        mainContainer.appendChild(container);
+      mainContainer.appendChild(container);
 
-        document.body.appendChild(mainContainer);
+      document.body.appendChild(mainContainer);
 
-        // Creates new toolbar without event processing
-        var toolbar = new mxDefaultToolbar(tbContainer, null);
-        var toolbar = new mxToolbar(tbContainer);
-        toolbar.enabled = false
-
-
-
-        // Workaround for Internet Explorer ignoring certain styles
-        if (mxClient.IS_QUIRKS)
-        {
-          document.body.style.overflow = 'hidden';
-          new mxDivResizer(tbContainer);
-          new mxDivResizer(container);
-        }
-
-        // Creates the model and the graph inside the container
-        // using the fastest rendering available on the browser
-        var model = new mxGraphModel();
-        var graph = new mxGraph(container, model);
-        var undoManager = new mxUndoManager();
-        var listener = function(sender, evt)
-        {
-          undoManager.undoableEditHappened(evt.getProperty('edit'));
-        };
-        graph.getModel().addListener(mxEvent.UNDO, listener);
-        graph.getView().addListener(mxEvent.UNDO, listener);
-        graph.dropEnabled = true;
-
-        graph.popupMenuHandler.factoryMethod = function(menu, cell, evt){
-          return createPopupMenu(graph, menu, cell, evt);
-
-        };
-
-        createPopupMenu = function(graph, menu, cell, evt) {
-
-          menu.addItem('cut ', "<%= asset_path('images/cut.gif') %>", function() {
-            cut();
-          });
-          menu.addItem('copy ', "<%= asset_path('images/copy.gif') %>", function() {
-            copy();
-          });
-          menu.addItem('paste ', "<%= asset_path('images/paste.gif') %>", function() {
-            paste();
-          });
-          menu.addItem('property ', "<%= asset_path('images/paste.gif') %>", function() {
-            console.log(cell);
-            var table = document.createElement('table');
-            var tr = document.createElement('tr');
-            var td1 = document.createElement('td');
-            var td2 = document.createElement('td');
-            var label = document.createElement('label');
-            label.innerText = "Id"
-            var input = document.createElement('input');
-            input.id = "id";
-            input.value = cell.id;
-
-            td1.appendChild(label);
-            td2.appendChild(input);
-            tr.appendChild(td1);
-            tr.appendChild(td2);
-            table.appendChild(tr)
-
-            var tr = document.createElement('tr');
-            var td1 = document.createElement('td');
-            var td2 = document.createElement('td');
-            var label = document.createElement('label');
-            label.innerText = "Top"
-            var input = document.createElement('input');
-            input.id = "top";
-            input.value = cell.geometry.y;
-
-            td1.appendChild(label);
-            td2.appendChild(input);
-            tr.appendChild(td1);
-            tr.appendChild(td2);
-            table.appendChild(tr)
-
-            var tr = document.createElement('tr');
-            var td1 = document.createElement('td');
-            var td2 = document.createElement('td');
-            var label = document.createElement('label');
-            label.innerText = "Left"
-            var input = document.createElement('input');
-            input.id = "left";
-            input.value = cell.geometry.x;
-            td1.appendChild(label);
-            td2.appendChild(input);
-            tr.appendChild(td1);
-            tr.appendChild(td2);
-            table.appendChild(tr)
-
-            var tr = document.createElement('tr');
-            var td1 = document.createElement('td');
-            var td2 = document.createElement('td');
-            var label = document.createElement('label');
-            label.innerText = "Width"
-            var input = document.createElement('input');
-            input.id = "width";
-            input.value = cell.geometry.width;
-            td1.appendChild(label);
-            td2.appendChild(input);
-            tr.appendChild(td1);
-            tr.appendChild(td2);
-            table.appendChild(tr)
-
-            var tr = document.createElement('tr');
-            var td1 = document.createElement('td');
-            var td2 = document.createElement('td');
-            var label = document.createElement('label');
-            label.innerText = "Height"
-            var input = document.createElement('input');
-            input.id = "height";
-            input.value = cell.geometry.height;
-
-            td1.appendChild(label);
-            td2.appendChild(input);
-            tr.appendChild(td1);
-            tr.appendChild(td2);
-            table.appendChild(tr)
-
-            var tr = document.createElement('tr');
-            var td1 = document.createElement('td');
-            var td2 = document.createElement('td');
-            var label = document.createElement('label');
-            label.innerText = "Style"
-            var input = document.createElement('input');
-            input.id = "style";
-            input.value = cell.style;
-
-            td1.appendChild(label);
-            td2.appendChild(input);
-            tr.appendChild(td1);
-            tr.appendChild(td2);
-            table.appendChild(tr)
-
-            var tr = document.createElement('tr');
-            var td1 = document.createElement('td');
-            var td2 = document.createElement('td');
-            var label = document.createElement('label');
-            label.innerText = "label"
-            var input = document.createElement('textarea');
-            input.id = "label";
-            input.value = cell.value
-            td1.appendChild(label);
-            td2.appendChild(input);
-            tr.appendChild(td1);
-            tr.appendChild(td2);
-            table.appendChild(tr)
-
-
-            var tr = document.createElement('tr');
-            var td1 = document.createElement('td');
-            var td2 = document.createElement('td');
-            var label = document.createElement('label');
-            label.innerText = "Description"
-            var input = document.createElement('input');
-            input.id = "description";
-
-            td1.appendChild(label);
-            td2.appendChild(input);
-            tr.appendChild(td1);
-            tr.appendChild(td2);
-            table.appendChild(tr)
-
-            var tr = document.createElement('tr');
-            var td1 = document.createElement('td');
-            var td2 = document.createElement('td');
-            var label = document.createElement('label');
-            label.innerText = "Href"
-            var input = document.createElement('input');
-            input.id = "href";
-
-            td1.appendChild(label);
-            td2.appendChild(input);
-            tr.appendChild(td1);
-            tr.appendChild(td2);
-            table.appendChild(tr)
-
-            var tr = document.createElement('tr');
-            var td1 = document.createElement('td');
-            var td2 = document.createElement('td');
-            var buttonOK = document.createElement('button');
-            buttonOK.innerText = "OK";
-            buttonOK.onclick  = function(){
-              graph.getModel().beginUpdate();
-              try{
-                cell.id  = document.getElementById("id").value;
-                var geometry = cell.getGeometry();
-                //geometry.x = document.getElementById("left").value;
-                geometry.y  = document.getElementById("top").value;
-                geometry.x  = document.getElementById("left").value;
-                geometry.width  = document.getElementById("width").value;
-                geometry.height  = document.getElementById("height").value;
-                cell.setGeometry(geometry);
-                cell.setStyle(document.getElementById("style").value);
-                graph.model.setValue(cell, document.getElementById("label").value);
-
-
-              }
-              finally{
-                graph.getModel().endUpdate();
-              }
-              wnd.setVisible(false);
-              var myNode = document.getElementById("property");
-              while (myNode.firstChild) {
-                myNode.removeChild(myNode.firstChild);
-              }
-
-            };
-
-            var buttonCancle = document.createElement('button');
-            buttonCancle.innerText = "Cancel";
-            buttonCancle.onclick  = function(){
-              wnd.setVisible(false);
-              var myNode = document.getElementById("property");
-              while (myNode.firstChild) {
-                myNode.removeChild(myNode.firstChild);
-              }
+      // Creates new toolbar without event processing
+      var toolbar = new mxDefaultToolbar(tbContainer, null);
+      var toolbar = new mxToolbar(tbContainer);
+      toolbar.enabled = false
 
 
 
-            };
+      // Workaround for Internet Explorer ignoring certain styles
+      if (mxClient.IS_QUIRKS)
+      {
+        document.body.style.overflow = 'hidden';
+        new mxDivResizer(tbContainer);
+        new mxDivResizer(container);
+      }
 
-            td2.appendChild(buttonOK);
-            td2.appendChild(buttonCancle);
-            tr.appendChild(td1);
-            tr.appendChild(td2);
-            table.appendChild(tr)
-            if(!document.getElementById("property")){
-              var content = document.createElement('div');
-            }else{
-              var content = document.getElementById("property")
+      // Creates the model and the graph inside the container
+      // using the fastest rendering available on the browser
+      var model = new mxGraphModel();
+      var graph = new mxGraph(container, model);
+      var undoManager = new mxUndoManager();
+      var listener = function(sender, evt)
+      {
+        undoManager.undoableEditHappened(evt.getProperty('edit'));
+      };
+      graph.getModel().addListener(mxEvent.UNDO, listener);
+      graph.getView().addListener(mxEvent.UNDO, listener);
+      graph.dropEnabled = true;
+
+      graph.popupMenuHandler.factoryMethod = function(menu, cell, evt){
+        return createPopupMenu(graph, menu, cell, evt);
+
+      };
+
+      createPopupMenu = function(graph, menu, cell, evt) {
+
+        menu.addItem('cut ', "<%= asset_path('images/cut.gif') %>", function() {
+          cut();
+        });
+        menu.addItem('copy ', "<%= asset_path('images/copy.gif') %>", function() {
+          copy();
+        });
+        menu.addItem('paste ', "<%= asset_path('images/paste.gif') %>", function() {
+          paste();
+        });
+        menu.addItem('property ', "<%= asset_path('images/paste.gif') %>", function() {
+          console.log(cell);
+          var table = document.createElement('table');
+          var tr = document.createElement('tr');
+          var td1 = document.createElement('td');
+          var td2 = document.createElement('td');
+          var label = document.createElement('label');
+          label.innerText = "Id"
+          var input = document.createElement('input');
+          input.id = "id";
+          input.value = cell.id;
+
+          td1.appendChild(label);
+          td2.appendChild(input);
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          table.appendChild(tr)
+
+          var tr = document.createElement('tr');
+          var td1 = document.createElement('td');
+          var td2 = document.createElement('td');
+          var label = document.createElement('label');
+          label.innerText = "Top"
+          var input = document.createElement('input');
+          input.id = "top";
+          input.value = cell.geometry.y;
+
+          td1.appendChild(label);
+          td2.appendChild(input);
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          table.appendChild(tr)
+
+          var tr = document.createElement('tr');
+          var td1 = document.createElement('td');
+          var td2 = document.createElement('td');
+          var label = document.createElement('label');
+          label.innerText = "Left"
+          var input = document.createElement('input');
+          input.id = "left";
+          input.value = cell.geometry.x;
+          td1.appendChild(label);
+          td2.appendChild(input);
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          table.appendChild(tr)
+
+          var tr = document.createElement('tr');
+          var td1 = document.createElement('td');
+          var td2 = document.createElement('td');
+          var label = document.createElement('label');
+          label.innerText = "Width"
+          var input = document.createElement('input');
+          input.id = "width";
+          input.value = cell.geometry.width;
+          td1.appendChild(label);
+          td2.appendChild(input);
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          table.appendChild(tr)
+
+          var tr = document.createElement('tr');
+          var td1 = document.createElement('td');
+          var td2 = document.createElement('td');
+          var label = document.createElement('label');
+          label.innerText = "Height"
+          var input = document.createElement('input');
+          input.id = "height";
+          input.value = cell.geometry.height;
+
+          td1.appendChild(label);
+          td2.appendChild(input);
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          table.appendChild(tr)
+
+          var tr = document.createElement('tr');
+          var td1 = document.createElement('td');
+          var td2 = document.createElement('td');
+          var label = document.createElement('label');
+          label.innerText = "Style"
+          var input = document.createElement('input');
+          input.id = "style";
+          input.value = cell.style;
+
+          td1.appendChild(label);
+          td2.appendChild(input);
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          table.appendChild(tr)
+
+          var tr = document.createElement('tr');
+          var td1 = document.createElement('td');
+          var td2 = document.createElement('td');
+          var label = document.createElement('label');
+          label.innerText = "label"
+          var input = document.createElement('textarea');
+          input.id = "label";
+          input.value = cell.value
+          td1.appendChild(label);
+          td2.appendChild(input);
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          table.appendChild(tr)
+
+
+          var tr = document.createElement('tr');
+          var td1 = document.createElement('td');
+          var td2 = document.createElement('td');
+          var label = document.createElement('label');
+          label.innerText = "Description"
+          var input = document.createElement('input');
+          input.id = "description";
+
+          td1.appendChild(label);
+          td2.appendChild(input);
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          table.appendChild(tr)
+
+          var tr = document.createElement('tr');
+          var td1 = document.createElement('td');
+          var td2 = document.createElement('td');
+          var label = document.createElement('label');
+          label.innerText = "Href"
+          var input = document.createElement('input');
+          input.id = "href";
+
+          td1.appendChild(label);
+          td2.appendChild(input);
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          table.appendChild(tr)
+
+          var tr = document.createElement('tr');
+          var td1 = document.createElement('td');
+          var td2 = document.createElement('td');
+          var buttonOK = document.createElement('button');
+          buttonOK.innerText = "OK";
+          buttonOK.onclick  = function(){
+            graph.getModel().beginUpdate();
+            try{
+              cell.id  = document.getElementById("id").value;
+              var geometry = cell.getGeometry();
+              //geometry.x = document.getElementById("left").value;
+              geometry.y  = document.getElementById("top").value;
+              geometry.x  = document.getElementById("left").value;
+              geometry.width  = document.getElementById("width").value;
+              geometry.height  = document.getElementById("height").value;
+              cell.setGeometry(geometry);
+              cell.setStyle(document.getElementById("style").value);
+              graph.model.setValue(cell, document.getElementById("label").value);
+
+
+            }
+            finally{
+              graph.getModel().endUpdate();
+            }
+            wnd.setVisible(false);
+            var myNode = document.getElementById("property");
+            while (myNode.firstChild) {
+              myNode.removeChild(myNode.firstChild);
             }
 
-            content.id = "property"
-            content.appendChild(table);
-            //mxUtils.write(content, )
+          };
 
-            wnd = new mxWindow('Properties', content, 300, 50, 200, null, false, false);
-            wnd.setMaximizable(true);
-            wnd.setScrollable(true);
-            wnd.setResizable(true);
-            wnd.setVisible(true);
-          });
+          var buttonCancle = document.createElement('button');
+          buttonCancle.innerText = "Cancel";
+          buttonCancle.onclick  = function(){
+            wnd.setVisible(false);
+            var myNode = document.getElementById("property");
+            while (myNode.firstChild) {
+              myNode.removeChild(myNode.firstChild);
+            }
 
 
 
-        }
+          };
 
-        // Matches DnD inside the graph
-        mxDragSource.prototype.getDropTarget = function(graph, x, y)
+          td2.appendChild(buttonOK);
+          td2.appendChild(buttonCancle);
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          table.appendChild(tr)
+          if(!document.getElementById("property")){
+            var content = document.createElement('div');
+          }else{
+            var content = document.getElementById("property")
+          }
+
+          content.id = "property"
+          content.appendChild(table);
+          //mxUtils.write(content, )
+
+          wnd = new mxWindow('Properties', content, 300, 50, 200, null, false, false);
+          wnd.setMaximizable(true);
+          wnd.setScrollable(true);
+          wnd.setResizable(true);
+          wnd.setVisible(true);
+        });
+
+
+
+      }
+
+      // Matches DnD inside the graph
+      mxDragSource.prototype.getDropTarget = function(graph, x, y)
+      {
+        var cell = graph.getCellAt(x, y);
+
+        if (!graph.isValidDropTarget(cell))
         {
-          var cell = graph.getCellAt(x, y);
-
-          if (!graph.isValidDropTarget(cell))
-          {
-            cell = null;
-          }
-
-          return cell;
-        };
-
-        // Enables new connections in the graph
-        //graph.setConnectable(true);
-        graph.setMultigraph(false);
-
-        // Stops editing on enter or escape keypress
-        var keyHandler = new mxKeyHandler(graph);
-        var rubberband = new mxRubberband(graph);
-
-        // Creates the outline (navigator, overview) for moving
-        // around the graph in the top, right corner of the window.
-        var outline = document.getElementById('outlineContainer');
-        var outln = new mxOutline(graph, outline);
-
-        function loadXML() {
-          var xml = $("#flowchart_xml").val();
-          var doc = mxUtils.parseXml(xml);
-          var codec = new mxCodec(doc);
-          var elt = doc.documentElement.firstChild;
-          var cells = [];
-          while (elt != null) {
-            cells.push(codec.decodeCell(elt));
-            graph.refresh();
-            elt = elt.nextSibling;
-          }
-
-          graph.addCells(cells);
+          cell = null;
         }
-        function exportFile(format)	{
-          var bg = '#ffffff';
-          var scale = 1;
-          var b = 1;
 
-          var imgExport = new mxImageExport();
-          var bounds = graph.getGraphBounds();
-          var vs = graph.view.scale;
+        return cell;
+      };
 
-          // New image export
-          var xmlDoc = mxUtils.createXmlDocument();
-          var root = xmlDoc.createElement('output');
-          xmlDoc.appendChild(root);
+      // Enables new connections in the graph
+      //graph.setConnectable(true);
+      graph.setMultigraph(false);
 
-          // Renders graph. Offset will be multiplied with state's scale when painting state.
-          var xmlCanvas = new mxXmlCanvas2D(root);
-          xmlCanvas.translate(Math.floor((b / scale - bounds.x) / vs), Math.floor((b / scale - bounds.y) / vs));
-          xmlCanvas.scale(scale / vs);
+      // Stops editing on enter or escape keypress
+      var keyHandler = new mxKeyHandler(graph);
+      var rubberband = new mxRubberband(graph);
 
-          imgExport.drawState(graph.getView().getState(graph.model.root), xmlCanvas);
-          // Puts request data together
-          var w = Math.ceil(bounds.width * scale / vs + 2 * b);
-          var h = Math.ceil(bounds.height * scale / vs + 2 * b);
+      // Creates the outline (navigator, overview) for moving
+      // around the graph in the top, right corner of the window.
+      var outline = document.getElementById('outlineContainer');
+      var outln = new mxOutline(graph, outline);
 
-          var xml = mxUtils.getXml(root);
+      function loadXML() {
+        var xml = $("#flowchart_xml").val();
+        var doc = mxUtils.parseXml(xml);
+        var codec = new mxCodec(doc);
+        var elt = doc.documentElement.firstChild;
+        var cells = [];
+        while (elt != null) {
+          cells.push(codec.decodeCell(elt));
+          graph.refresh();
+          elt = elt.nextSibling;
+        }
 
-          if (bg != null)
-          {
-            bg = '&bg=' + bg;
-          }
+        graph.addCells(cells);
+      }
+      function exportFile(format)	{
+        var bg = '#ffffff';
+        var scale = 1;
+        var b = 1;
 
-          alert(graph.urlImage);
+        var imgExport = new mxImageExport();
+        var bounds = graph.getGraphBounds();
+        var vs = graph.view.scale;
+
+        // New image export
+        var xmlDoc = mxUtils.createXmlDocument();
+        var root = xmlDoc.createElement('output');
+        xmlDoc.appendChild(root);
+
+        // Renders graph. Offset will be multiplied with state's scale when painting state.
+        var xmlCanvas = new mxXmlCanvas2D(root);
+        xmlCanvas.translate(Math.floor((b / scale - bounds.x) / vs), Math.floor((b / scale - bounds.y) / vs));
+        xmlCanvas.scale(scale / vs);
+
+        imgExport.drawState(graph.getView().getState(graph.model.root), xmlCanvas);
+        // Puts request data together
+        var w = Math.ceil(bounds.width * scale / vs + 2 * b);
+        var h = Math.ceil(bounds.height * scale / vs + 2 * b);
+
+        var xml = mxUtils.getXml(root);
+
+        if (bg != null)
+        {
+          bg = '&bg=' + bg;
+        }
+
+        alert(graph.urlImage);
 
 //          new mxXmlRequest('Export', 'filename=export.' + format + '&format=' + format +
 //                  bg + '&w=' + w + '&h=' + h + '&xml=' + encodeURIComponent(xml)).
 //                  simulate(document, '_blank');
+      }
+
+      graph.centerZoom = false;
+
+      var addVertex = function(icon, w, h, style)
+      {
+        var vertex = new mxCell(null, new mxGeometry(0, 0, w, h), style);
+        vertex.setVertex(true);
+
+        addToolbarItem(graph, toolbar, vertex, icon);
+      };
+      var undo = function(){
+        undoManager.undo();
+      };
+      var redo = function(){
+        undoManager.redo();
+      };
+      var copy = function(){
+        mxClipboard.copy(graph);
+      };
+      var paste = function(){
+        mxClipboard.paste(graph);
+      };
+      var cut = function(){
+        mxClipboard.cut(graph);
+      };
+      var removeCells = function(){
+        mxClipboard.removeCells(graph);
+      };
+
+      var allowConnection = function(){
+        graph.setConnectable(!graph.isConnectable());
+      };
+      var allowConnectionOrth = function(){
+        graph.setConnectable(!graph.isConnectable());
+
+        if(graph.isConnectable()){
+          graph.getStylesheet().getDefaultEdgeStyle()['edgeStyle'] = 'orthogonalEdgeStyle';
         }
+      };
 
-        graph.centerZoom = false;
-
-        var addVertex = function(icon, w, h, style)
-        {
-          var vertex = new mxCell(null, new mxGeometry(0, 0, w, h), style);
-          vertex.setVertex(true);
-
-          addToolbarItem(graph, toolbar, vertex, icon);
-        };
-        var undo = function(){
-          undoManager.undo();
-        };
-        var redo = function(){
-          undoManager.redo();
-        };
-        var copy = function(){
-          mxClipboard.copy(graph);
-        };
-        var paste = function(){
-          mxClipboard.paste(graph);
-        };
-        var cut = function(){
-          mxClipboard.cut(graph);
-        };
-        var removeCells = function(){
-          mxClipboard.removeCells(graph);
-        };
-
-        var allowConnection = function(){
-          graph.setConnectable(!graph.isConnectable());
-        };
-        var allowConnectionOrth = function(){
-          graph.setConnectable(!graph.isConnectable());
-
-          if(graph.isConnectable()){
-            graph.getStylesheet().getDefaultEdgeStyle()['edgeStyle'] = 'orthogonalEdgeStyle';
-          }
-        };
-
-        var exportImage =function(){
-          	exportFile('png');
+      var exportImage =function(){
+        exportFile('png');
 //          var preview = new mxPrintPreview(graph, 1);
 //          preview.open();
 
@@ -522,91 +525,91 @@
 
 //          alert(img)
 
-        };
-        var zoomIn =function(){
-          graph.zoomIn();
-        };
-        var zoomOut =function(){
-          graph.zoomOut();
-        };
-        var save = function(){
-          var encoder = new mxCodec();
-          var node = encoder.encode(graph.getModel());
-          $("#flowchart_xml").val(mxUtils.getPrettyXml(node));
+      };
+      var zoomIn =function(){
+        graph.zoomIn();
+      };
+      var zoomOut =function(){
+        graph.zoomOut();
+      };
+      var save = function(){
+        var encoder = new mxCodec();
+        var node = encoder.encode(graph.getModel());
+        $("#flowchart_xml").val(mxUtils.getPrettyXml(node));
 //          mxUtils.popup(mxUtils.getPrettyXml(node), true);
-        }
+      }
 
-        //addVertex('images/save.gif', 120, 160, 'shape=swimlane;startSize=20;');
-        toolbar.addItem('save', "<%= asset_path('images/save.gif') %>",save,"<%= asset_path('images/save.gif') %>");
-        addVertex("<%= asset_path('images/preview.gif') %>", 100, 40, '');
-        addVertex("<%= asset_path('images/print.gif') %>", 100, 40, 'shape=rounded');
-        toolbar.addItem('image',"<%= asset_path('images/image.gif') %>",exportImage,"<%= asset_path('images/image.gif') %>");
-        toolbar.addLine();
-        addVertex("<%= asset_path('images/select.gif') %>", 120, 160, 'shape=select;startSize=20;');
-        toolbar.addItem('orthogonal',"<%= asset_path('images/vertical.gif') %>",allowConnectionOrth,"<%= asset_path('images/vertical.gif') %>");
-        toolbar.addItem('straight',"<%= asset_path('images/straight.gif') %>",allowConnection,"<%= asset_path('images/straight.gif') %>");
+      //addVertex('images/save.gif', 120, 160, 'shape=swimlane;startSize=20;');
+      toolbar.addItem('save', "<%= asset_path('images/save.gif') %>",save,"<%= asset_path('images/save.gif') %>");
+      addVertex("<%= asset_path('images/preview.gif') %>", 100, 40, '');
+      addVertex("<%= asset_path('images/print.gif') %>", 100, 40, 'shape=rounded');
+      toolbar.addItem('image',"<%= asset_path('images/image.gif') %>",exportImage,"<%= asset_path('images/image.gif') %>");
+      toolbar.addLine();
+      addVertex("<%= asset_path('images/select.gif') %>", 120, 160, 'shape=select;startSize=20;');
+      toolbar.addItem('orthogonal',"<%= asset_path('images/vertical.gif') %>",allowConnectionOrth,"<%= asset_path('images/vertical.gif') %>");
+      toolbar.addItem('straight',"<%= asset_path('images/straight.gif') %>",allowConnection,"<%= asset_path('images/straight.gif') %>");
 
-        addVertex("<%= asset_path('images/pan.gif') %>", 40, 40, 'shape=pan');
-        toolbar.addLine();
-        //	toolbar.addActionOption('images/undo.gif','undu',undu());
-        //		toolbar.addItem('Copy', null, 'copy');
+      addVertex("<%= asset_path('images/pan.gif') %>", 40, 40, 'shape=pan');
+      toolbar.addLine();
+      //	toolbar.addActionOption('images/undo.gif','undu',undu());
+      //		toolbar.addItem('Copy', null, 'copy');
 
-        toolbar.addItem('undu',"<%= asset_path('images/undo.gif') %>",undo,"<%= asset_path('images/undo.gif') %>");
-        toolbar.addItem('redo',"<%= asset_path('images/redo.gif') %>",redo,"<%= asset_path('images/redo.gif') %>");
+      toolbar.addItem('undu',"<%= asset_path('images/undo.gif') %>",undo,"<%= asset_path('images/undo.gif') %>");
+      toolbar.addItem('redo',"<%= asset_path('images/redo.gif') %>",redo,"<%= asset_path('images/redo.gif') %>");
 
-        toolbar.addLine();
-        toolbar.addItem('cut',"<%= asset_path('images/cut.gif') %>",cut,"<%= asset_path('images/cut.gif') %>");
-        toolbar.addItem('copy',"<%= asset_path('images/copy.gif') %>",copy,"<%= asset_path('images/copy.gif') %>");
-        toolbar.addItem('paste',"<%= asset_path('images/paste.gif') %>",paste,"<%= asset_path('images/paste.gif') %>");
-        toolbar.addItem('removeCells',"<%= asset_path('images/delete.gif') %>",removeCells,"<%= asset_path('images/delete.gif') %>");
-
-
-        toolbar.addLine();
-        addVertex("<%= asset_path('images/group.gif') %>", 100, 40, 'shape=straight');
-        addVertex("<%= asset_path('images/ungroup.gif') %>", 40, 40, 'shape=pan');
-        toolbar.addLine();
-        addVertex("<%= asset_path('images/swimlane.gif') %>", 120, 160, 'shape=swimlane;startSize=20;');
-        addVertex("<%= asset_path('images/rectangle.gif') %>", 100, 40, 'shape=rectangle');
-        addVertex("<%= asset_path('images/rounded.gif') %>", 100, 40, 'shape=rounded');
-        addVertex("<%= asset_path('images/ellipse.gif') %>", 40, 40, 'shape=ellipse');
-        addVertex("<%= asset_path('images/rhombus.gif') %>", 40, 40, 'shape=rhombus');
-        addVertex("<%= asset_path('images/triangle.gif') %>", 40, 40, 'shape=triangle');
-        addVertex("<%= asset_path('images/cylinder.gif') %>", 40, 40, 'shape=cylinder');
-        addVertex("<%= asset_path('images/actor.gif') %>", 30, 40, 'shape=actor');
-        toolbar.addLine();
-
-        addVertex("<%= asset_path('images/symbols/small_event.gif') %>", 40, 40, 'shape=small_event');
-        addVertex("<%= asset_path('images/symbols/small_event_intermediate.gif') %>", 40, 40, 'shape=triangle');
-        addVertex("<%= asset_path('images/symbols/small_event_end.gif') %>", 40, 40, 'shape=cylinder');
-        addVertex("<%= asset_path('images/symbols/small_timer.gif') %>", 30, 40, 'shape=small_timer');
-        addVertex("<%= asset_path('images/symbols/small_message.gif') %>", 40, 40, 'shape=rhombus');
-        addVertex("<%= asset_path('images/symbols/small_message_intermediate.gif') %>", 40, 40, 'shape=triangle');
-        addVertex("<%= asset_path('images/symbols/small_link.gif') %>", 40, 40, 'shape=cylinder');
-        addVertex("<%= asset_path('images/symbols/small_rule.gif') %>", 30, 40, 'shape=actor');
-        addVertex("<%= asset_path('images/symbols/small_multiple.gif') %>", 40, 40, 'shape=rhombus');
-        addVertex("<%= asset_path('images/symbols/small_error.gif') %>", 40, 40, 'shape=triangle');
-        addVertex("<%= asset_path('images/symbols/small_cancel_end.gif') %>", 40, 40, 'shape=cylinder');
-        addVertex("<%= asset_path('images/symbols/small_cancel_intermediate.gif') %>", 30, 40, 'shape=actor');
-        addVertex("<%= asset_path('images/symbols/small_fork.gif') %>", 40, 40, 'shape=rhombus');
-        addVertex("<%= asset_path('images/symbols/small_merge.gif') %>", 40, 40, 'shape=triangle');
-        addVertex("<%= asset_path('images/symbols/small_inclusive.gif') %>", 40, 40, 'shape=cylinder');
-        toolbar.addLine();
+      toolbar.addLine();
+      toolbar.addItem('cut',"<%= asset_path('images/cut.gif') %>",cut,"<%= asset_path('images/cut.gif') %>");
+      toolbar.addItem('copy',"<%= asset_path('images/copy.gif') %>",copy,"<%= asset_path('images/copy.gif') %>");
+      toolbar.addItem('paste',"<%= asset_path('images/paste.gif') %>",paste,"<%= asset_path('images/paste.gif') %>");
+      toolbar.addItem('removeCells',"<%= asset_path('images/delete.gif') %>",removeCells,"<%= asset_path('images/delete.gif') %>");
 
 
-        addVertex("<%= asset_path('images/zoom.gif') %>", 120, 160, 'shape=swimlane;startSize=20;');
-        toolbar.addItem('zoomIn',"<%= asset_path('images/zoomin.gif') %>",zoomIn,"<%= asset_path('images/zoomin.gif') %>");
-        toolbar.addItem('zoomOut',"<%= asset_path('images/zoomout.gif') %>",zoomOut,"<%= asset_path('images/zoomout.gif') %>");
-        addVertex("<%= asset_path('images/zoomactual.gif') %>", 40, 40, 'shape=ellipse');
-        addVertex("<%= asset_path('images/zoom.gif') %>", 40, 40, 'shape=rhombus');
-        toolbar.addLine();
+      toolbar.addLine();
+      addVertex("<%= asset_path('images/group.gif') %>", 100, 40, 'shape=straight');
+      addVertex("<%= asset_path('images/ungroup.gif') %>", 40, 40, 'shape=pan');
+      toolbar.addLine();
+      addVertex("<%= asset_path('images/swimlane.gif') %>", 120, 160, 'shape=swimlane;startSize=20;');
+      addVertex("<%= asset_path('images/rectangle.gif') %>", 100, 40, 'shape=rectangle');
+      addVertex("<%= asset_path('images/rounded.gif') %>", 100, 40, 'shape=rounded');
+      addVertex("<%= asset_path('images/ellipse.gif') %>", 40, 40, 'shape=ellipse');
+      addVertex("<%= asset_path('images/rhombus.gif') %>", 40, 40, 'shape=rhombus');
+      addVertex("<%= asset_path('images/triangle.gif') %>", 40, 40, 'shape=triangle');
+      addVertex("<%= asset_path('images/cylinder.gif') %>", 40, 40, 'shape=cylinder');
+      addVertex("<%= asset_path('images/actor.gif') %>", 30, 40, 'shape=actor');
+      toolbar.addLine();
 
-        addVertex("<%= asset_path('images/outline.gif') %>", 40, 40, 'shape=triangle');
-        addVertex("<%= asset_path('images/tasks.gif') %>", 40, 40, 'shape=cylinder');
-        addVertex("<%= asset_path('images/help.gif') %>", 30, 40, 'shape=actor');
-        addVertex("<%= asset_path('images/console.gif') %>", 30, 40, 'shape=actor');
-        toolbar.addLine();
+      addVertex("<%= asset_path('images/symbols/small_event.gif') %>", 40, 40, 'shape=small_event');
+      addVertex("<%= asset_path('images/symbols/small_event_intermediate.gif') %>", 40, 40, 'shape=triangle');
+      addVertex("<%= asset_path('images/symbols/small_event_end.gif') %>", 40, 40, 'shape=cylinder');
+      addVertex("<%= asset_path('images/symbols/small_timer.gif') %>", 30, 40, 'shape=small_timer');
+      addVertex("<%= asset_path('images/symbols/small_message.gif') %>", 40, 40, 'shape=rhombus');
+      addVertex("<%= asset_path('images/symbols/small_message_intermediate.gif') %>", 40, 40, 'shape=triangle');
+      addVertex("<%= asset_path('images/symbols/small_link.gif') %>", 40, 40, 'shape=cylinder');
+      addVertex("<%= asset_path('images/symbols/small_rule.gif') %>", 30, 40, 'shape=actor');
+      addVertex("<%= asset_path('images/symbols/small_multiple.gif') %>", 40, 40, 'shape=rhombus');
+      addVertex("<%= asset_path('images/symbols/small_error.gif') %>", 40, 40, 'shape=triangle');
+      addVertex("<%= asset_path('images/symbols/small_cancel_end.gif') %>", 40, 40, 'shape=cylinder');
+      addVertex("<%= asset_path('images/symbols/small_cancel_intermediate.gif') %>", 30, 40, 'shape=actor');
+      addVertex("<%= asset_path('images/symbols/small_fork.gif') %>", 40, 40, 'shape=rhombus');
+      addVertex("<%= asset_path('images/symbols/small_merge.gif') %>", 40, 40, 'shape=triangle');
+      addVertex("<%= asset_path('images/symbols/small_inclusive.gif') %>", 40, 40, 'shape=cylinder');
+      toolbar.addLine();
 
-        loadXML();
+
+      addVertex("<%= asset_path('images/zoom.gif') %>", 120, 160, 'shape=swimlane;startSize=20;');
+      toolbar.addItem('zoomIn',"<%= asset_path('images/zoomin.gif') %>",zoomIn,"<%= asset_path('images/zoomin.gif') %>");
+      toolbar.addItem('zoomOut',"<%= asset_path('images/zoomout.gif') %>",zoomOut,"<%= asset_path('images/zoomout.gif') %>");
+      addVertex("<%= asset_path('images/zoomactual.gif') %>", 40, 40, 'shape=ellipse');
+      addVertex("<%= asset_path('images/zoom.gif') %>", 40, 40, 'shape=rhombus');
+      toolbar.addLine();
+
+      addVertex("<%= asset_path('images/outline.gif') %>", 40, 40, 'shape=triangle');
+      addVertex("<%= asset_path('images/tasks.gif') %>", 40, 40, 'shape=cylinder');
+      addVertex("<%= asset_path('images/help.gif') %>", 30, 40, 'shape=actor');
+      addVertex("<%= asset_path('images/console.gif') %>", 30, 40, 'shape=actor');
+      toolbar.addLine();
+
+      loadXML();
 
 //        var button = mxUtils.button('Create toolbar entry from selection', function(evt)
 //        {
@@ -641,33 +644,50 @@
 //        button.style.top = '2px';
 //
 //        document.body.appendChild(button);
-      }
     }
 
-    function addToolbarItem(graph, toolbar, prototype, image)
+
+      $("#save-proceso").on("click", function(event){
+        event.preventDefault();
+        save()
+        $(this).closest('form').submit();
+      });
+
+  }
+
+  function addToolbarItem(graph, toolbar, prototype, image)
+  {
+    // Function that is executed when the image is dropped on
+    // the graph. The cell argument points to the cell under
+    // the mousepointer if there is one.
+    var funct = function(graph, evt, cell)
     {
-      // Function that is executed when the image is dropped on
-      // the graph. The cell argument points to the cell under
-      // the mousepointer if there is one.
-      var funct = function(graph, evt, cell)
-      {
-        graph.stopEditing(false);
+      graph.stopEditing(false);
 
-        var pt = graph.getPointForEvent(evt);
-        var vertex = graph.getModel().cloneCell(prototype);
-        vertex.geometry.x = pt.x;
-        vertex.geometry.y = pt.y;
+      var pt = graph.getPointForEvent(evt);
+      var vertex = graph.getModel().cloneCell(prototype);
+      vertex.geometry.x = pt.x;
+      vertex.geometry.y = pt.y;
 
-        graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
-      }
-
-      // Creates the image which is used as the drag icon (preview)
-      var img = toolbar.addMode(null, image, funct);
-      mxUtils.makeDraggable(img, graph, funct);
+      graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
     }
 
-    main()
-  </script>
+    // Creates the image which is used as the drag icon (preview)
+    var img = toolbar.addMode(null, image, funct);
+    mxUtils.makeDraggable(img, graph, funct);
+  }
+
+  main()
+
+//  $("#save-proceso").on("click", function(event){
+//    event.preventDefault();
+//    var encoder = new mxCodec();
+//    var node = encoder.encode(graph.getModel());
+//    $("#flowchart_xml").val(mxUtils.getPrettyXml(node));
+//    $(this).closest('form').submit();
+//  });
+
+</script>
 
 
 <!-- Calls the main function after the page has loaded. Container is dynamically created. -->
