@@ -1,7 +1,11 @@
+<%= content_for :custome_script do %>
+  <%= javascript_include_tag 'mxClient' %>
+<% end %>
+
 <%= render 'procesos/nav' %>
 
-<main role="main" class="container">
-<div class="my-3 p-3 bg-white rounded box-shadow">
+<main role="main" class="container" id="main-div-flowchart" style="margin-top: 15px;width: 1110px;box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);background: #ffffff;">
+<div class="my-3 p-3 bg-white rounded box-shadow" style="display: inline-block;box-shadow: none;">
 <br>
   <p id="notice"><%= notice %></p>
   
@@ -34,4 +38,69 @@
   <%= link_to 'Edit', edit_proceso_path(@proceso) %> |
   <%= link_to 'Back', procesos_path %>
 </div>
+
+  <% if FlowChart.last_approved(@proceso.id).present? %>
+    <%= hidden_field_tag "", FlowChart.last_approved(@proceso.id).flowchart_xml, id: "flowchart_xml" %>
+    <div id="show-flowcharts" style="display: inline-block; float: right; position: relative; max-width: 800px;">
+    </div>
+  <% end %>
 </main>
+
+
+<!-- Example code -->
+<script type="text/javascript">
+  function main()
+  {
+    mxConnectionHandler.prototype.connectImage = new mxImage("<%= asset_path('images/connector.gif') %>", 16, 16);
+
+    // Checks if browser is supported
+    if (!mxClient.isBrowserSupported())
+    {
+      mxUtils.error('Browser is not supported!', 200, false);
+    }
+    else
+    {
+      var container = document.getElementById('show-flowcharts');
+
+      var model = new mxGraphModel();
+      var graph = new mxGraph(container, model);
+      var undoManager = new mxUndoManager();
+      var listener = function(sender, evt)
+      {
+        undoManager.undoableEditHappened(evt.getProperty('edit'));
+      };
+      graph.getModel().addListener(mxEvent.UNDO, listener);
+      graph.getView().addListener(mxEvent.UNDO, listener);
+      graph.dropEnabled = true;
+
+      graph.popupMenuHandler.factoryMethod = function(menu, cell, evt){
+        return createPopupMenu(graph, menu, cell, evt);
+
+      };
+
+      graph.setMultigraph(false);
+
+      var keyHandler = new mxKeyHandler(graph);
+      var rubberband = new mxRubberband(graph);
+
+//      var outline = document.getElementById('outlineContainer');
+//      var outln = new mxOutline(graph, outline);
+
+      function loadXML() {
+        var xml = $("#flowchart_xml").val();
+        var doc = mxUtils.parseXml(xml);
+        var codec = new mxCodec(doc);
+        var elt = doc.documentElement.firstChild;
+        var cells = [];
+        while (elt != null) {
+          cells.push(codec.decodeCell(elt));
+          graph.refresh();
+          elt = elt.nextSibling;
+        }
+        graph.addCells(cells);
+      }
+      loadXML();
+    }
+  }
+  main()
+</script>

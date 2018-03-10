@@ -40,7 +40,6 @@
           <td><%= proceso.version %></td>
           <td><%= link_to '', proceso, class: "btn btn-outline-primary fas fa-eye fa-2x" %></td>
           <td><%= link_to '', edit_proceso_path(proceso), class: "btn btn-outline-primary far fa-edit fa-2x" %></td>
-          <td><%= link_to 'view_proceso', view_proceso_proceso_path(proceso), class: "btn btn-outline-primary far fa-edit fa-2x" %></td>
           <td><%= link_to '', proceso, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-outline-primary far fa-trash-alt fa-2x" if (current_user.role == "admin" && proceso.status != "Aceptado") %></td>
         </tr>
       <% end %>

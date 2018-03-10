@@ -575,10 +575,10 @@ else
 }
 
 // Adds all required stylesheets and namespaces
-if (mxLoadStylesheets)
-{
-	mxClient.link('stylesheet', mxClient.basePath + '/css/common.css');
-}
+//if (mxLoadStylesheets)
+//{
+//	mxClient.link('stylesheet', mxClient.basePath + '/css/common.css');
+//}
 
 /**
  * Variable: languages
@@ -1709,13 +1709,13 @@ var mxResources =
 	 * 
 	 * callback - Callback function for asynchronous loading.
 	 */
-	loadResources: function(callback)
-	{
-		mxResources.add(mxClient.basePath+'/resources/editor', null, function()
-		{
-			mxResources.add(mxClient.basePath+'/resources/graph', null, callback);
-		});
-	}
+	//loadResources: function(callback)
+	//{
+	//	mxResources.add(mxClient.basePath+'/resources/editor', null, function()
+	//	{
+	//		mxResources.add(mxClient.basePath+'/resources/graph', null, callback);
+	//	});
+	//}
 
 };
 /**
@@ -54414,14 +54414,14 @@ function mxGraph(container, model, renderHint, stylesheet)
  * Installs the required language resources at class
  * loading time.
  */
-if (mxLoadResources)
-{
-	mxResources.add(mxClient.basePath + '/resources/graph');
-}
-else
-{
-	mxClient.defaultBundles.push(mxClient.basePath + '/resources/graph');
-}
+//if (mxLoadResources)
+//{
+//	mxResources.add(mxClient.basePath + '/resources/graph');
+//}
+//else
+//{
+//	mxClient.defaultBundles.push(mxClient.basePath + '/resources/graph');
+//}
 
 /**
  * Extends mxEventSource.
@@ -82665,14 +82665,14 @@ function mxEditor(config)
  * Installs the required language resources at class
  * loading time.
  */
-if (mxLoadResources)
-{
-	mxResources.add(mxClient.basePath + '/resources/editor');
-}
-else
-{
-	mxClient.defaultBundles.push(mxClient.basePath + '/resources/editor');
-}
+//if (mxLoadResources)
+//{
+//	mxResources.add(mxClient.basePath + '/resources/editor');
+//}
+//else
+//{
+//	mxClient.defaultBundles.push(mxClient.basePath + '/resources/editor');
+//}
 
 /**
  * Extends mxEventSource.
