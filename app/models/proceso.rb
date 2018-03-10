@@ -15,7 +15,7 @@ class Proceso < ApplicationRecord
 
   def check_status_flow_chart
     if self.status == "Aceptado"
-      self.flow_charts.update_attributes(status: "aceptado", approved_at: Time.now)
+      self.flow_charts.update_all(status: "aceptado", approved_at: Time.now)
     end
   end
 
