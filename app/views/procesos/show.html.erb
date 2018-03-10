@@ -33,7 +33,16 @@
     <strong>Version:</strong>
     <%= @proceso.version %>
   </p>
-  
+  <% if FlowChart.last_approved(@proceso.id).present? %>
+    <p>
+      <strong>Rectangle:</strong>
+      <%= FlowChart.last_approved(@proceso.id).flowchart_xml.scan(/(?=#{"rectangle"})/).count +  FlowChart.last_approved(@proceso.id).flowchart_xml.scan(/(?=#{"rounded"})/).count %>
+    </p>
+    <p>
+      <strong>Circles:</strong>
+      <%= FlowChart.last_approved(@proceso.id).flowchart_xml.scan(/(?=#{"ellipse"})/).count %>
+    </p>
+  <% end %>
   
   <%= link_to 'Edit', edit_proceso_path(@proceso) %> |
   <%= link_to 'Back', procesos_path %>

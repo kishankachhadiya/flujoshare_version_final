@@ -20,7 +20,7 @@ class MenuController < ApplicationController
   end
   
   def cambios_aprobados
-    @records = Record.order('proceso_id')
+    @records =  Record.group(:proceso_id).having('Max(id) >= id').order('proceso_id')
   end
   
   def estadisticas
