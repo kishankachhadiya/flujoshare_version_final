@@ -4,7 +4,13 @@ class ProcesosController < ApplicationController
   # GET /procesos
   # GET /procesos.json
   def index
-    @procesos = Proceso.all
+    if current_user.role == "admin"
+      @procesos = Proceso.all
+    else
+      my_procesos_ids = current_user.procesos.pluck(:id)
+      previour_procesos_ids = Proceso.joins(:flow_charts).where(flow_charts: {status: "aceptado"} ).pluck(:id).uniq
+      @procesos = Proceso.where(" status = 'Aceptado' OR id in (?) ", (my_procesos_ids + previour_procesos_ids + [0]))
+    end
   end
 
   # GET /procesos/1

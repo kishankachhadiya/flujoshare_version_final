@@ -8,10 +8,6 @@ class MenuController < ApplicationController
   def procesos_pendientes
     @procesos = Proceso.where(status: 'Solicitud de Aprobacion')
   end
-
-  def procesos_flowchart_pendientes
-    @flowcharts = FlowChart.where(status: 'solicitud de aprobacion').includes(:proceso)
-  end
   
   def cambio_estado_proceso
     proceso = Proceso.find(params[:id])

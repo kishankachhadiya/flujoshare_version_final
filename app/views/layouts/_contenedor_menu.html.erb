@@ -12,13 +12,6 @@
                 <% end %>
             </a>    
         </li>
-        <li class="nav-item">
-          <a><%= link_to "Procesos Flow chart Pendientes", menu_procesos_flowchart_pendientes_path, class: "p-2 text-muted" %>
-            <% if FlowChart.where(status: "pending").count != 0 %>
-              <span class="badge badge-danger"><%= FlowChart.where(status: "pending").count %></span>
-            <% end %>
-          </a>
-        </li>
     <% end %>
     <li class="nav-item">
         <a><%= link_to "Comentarios", posts_path, class: "p-2 text-muted" %></a>
