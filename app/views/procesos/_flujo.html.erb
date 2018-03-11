@@ -470,7 +470,7 @@
           bg = '&bg=' + bg;
         }
 
-        alert(graph.urlImage);
+//        alert( encodeURIComponent(xml));
 
 //          new mxXmlRequest('Export', 'filename=export.' + format + '&format=' + format +
 //                  bg + '&w=' + w + '&h=' + h + '&xml=' + encodeURIComponent(xml)).
@@ -517,14 +517,14 @@
       };
 
       var exportImage =function(){
+//         image = mxCellRenderer.createBufferedImage(graph, null, 1, Color.WHITE, true, null);
+//        alert(image);
         exportFile('png');
 //          var preview = new mxPrintPreview(graph, 1);
 //          preview.open();
 
 //          var img = new createImage(graph)
-
 //          alert(img)
-
       };
       var zoomIn =function(){
         graph.zoomIn();
@@ -536,6 +536,7 @@
         var encoder = new mxCodec();
         var node = encoder.encode(graph.getModel());
         $("#flowchart_xml").val(mxUtils.getPrettyXml(node));
+        $("#flowchart_image").val(container.innerHTML);
 //          mxUtils.popup(mxUtils.getPrettyXml(node), true);
       }
 

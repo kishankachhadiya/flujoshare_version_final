@@ -8,6 +8,7 @@ class FlowChart < ApplicationRecord
 
   def set_flowchart_xml
     self.flowchart_xml = self.proceso.flowchart_xml
+    self.flowchart_image = self.proceso.flowchart_image
   end
 
   def self.last_approved(proceso_id)

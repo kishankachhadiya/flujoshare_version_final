@@ -93,6 +93,6 @@ class ProcesosController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def proceso_params
       params[:proceso][:flowchart_xml] = params[:proceso][:flowchart_xml].gsub("<mxGraphModel>", '').gsub("</mxGraphModel>", '')
-      params.require(:proceso).permit(:nombre, :commits, :status, :contribuidores, :version, :flowchart_xml)
+      params.require(:proceso).permit(:nombre, :commits, :status, :contribuidores, :version, :flowchart_xml, :flowchart_image)
     end
 end
