@@ -50,10 +50,18 @@
       <%= @proceso.flowchart_xml.scan(/(?=#{"rectangle"})/).count +  @proceso.flowchart_xml.scan(/(?=#{"rounded"})/).count %>
     </p>
     <p>
+      <strong>Writer Rectangle:</strong>
+      <%= @proceso.flowchart_xml.scan(/value=".*" style=\"shape=rectangle\"/).count + @proceso.flowchart_xml.scan(/value=".*" style=\"shape=rounded\"/).count %>
+    </p>
+    <p>
       <strong>Circles:</strong>
       <%= @proceso.flowchart_xml.scan(/(?=#{"ellipse"})/).count %>
     </p>
-  
+    <p>
+      <strong>Writer Circles:</strong>
+      <%= @proceso.flowchart_xml.scan(/value=".*" style=\"shape=ellipse\"/).count %>
+    </p>
+
   <%= link_to 'Edit', edit_proceso_path(@proceso) %> |
   <%= link_to 'Back', procesos_path %>
 </div>
