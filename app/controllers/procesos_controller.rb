@@ -40,7 +40,7 @@ class ProcesosController < ApplicationController
         record = Record.new
         record.proceso_id = @proceso.id
         record.user_edit = current_user.email
-        record.version_edit = Proceso.where(user_id: current_user.id).last.version
+        record.version_edit = Proceso.where(user_id: current_user.id).last.version if Proceso.where(user_id: current_user.id).last
         record.save
       end
       else
@@ -61,7 +61,7 @@ class ProcesosController < ApplicationController
         record = Record.new
         record.proceso_id = @proceso.id
         record.user_edit = current_user.email
-        record.version_edit = Proceso.where(user_id: current_user.id).last.version
+        record.version_edit = Proceso.where(user_id: current_user.id).last.version if Proceso.where(user_id: current_user.id).last
         record.save
       end
       else
