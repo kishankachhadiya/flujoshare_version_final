@@ -20,7 +20,7 @@
 
   <tbody>
     <% @records.each do |record| %>
-      <% if record.proceso.status == 'Aceptado' %>
+      <%# if record.proceso.status == 'Aceptado' %>
         <td><%= record.proceso.nombre %></td>
         <td><%= record.proceso.commits %></td>
         <td>
@@ -32,7 +32,7 @@
         <td><%= record.version_edit %></td>
         <td><%= record.user_edit %></td>
         <td><%= record.proceso.created_at %></td>
-      <% end %>
+      <%# end %>
       </tr>
     <% end %>
   </tbody>
