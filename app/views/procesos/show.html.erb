@@ -15,57 +15,111 @@
   .clearfix {
     zoom: 1; /* For IE 6/7 (trigger hasLayout) */
   }
+  table th,table td{
+  border: 1px solid #dddddd;
+  }
+  table thead {
+    background: #eee;
+  }
+  table thead th {
+    padding: 5px;
+  }
+  table tbody td {
+    padding: 5px;
+  }
+  #main-div-flowchart{
+    background: #ffffff none repeat scroll 0 0;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+    margin-top: 15px;
+    width: 1110px;
+  }
+  @media only screen and (max-width: 999px) {
+    #main-div-flowchart{
+      width: calc(100% - 30px) !important;
+      overflow: auto;
+    }
+  }
+
 </style>
-<main role="main" class="container clearfix" id="main-div-flowchart" style="margin-top: 15px;width: 1110px;box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);background: #ffffff;">
-<div class="my-3 p-3 bg-white rounded box-shadow" style="display: inline-block;box-shadow: none;width:30%;vertical-align: top;">
+<main role="main" class="container clearfix" id="main-div-flowchart">
+<div class="my-3 p-3 bg-white rounded box-shadow" style="box-shadow: none;">
 <br>
   <p id="notice"><%= notice %></p>
-  
-  <p>
-    <strong>Nombre:</strong>
-    <%= @proceso.nombre %>
-  </p>
-  
-  <p>
-    <strong>Commits:</strong>
-    <%= @proceso.commits %>
-  </p>
-  
-  <p>
-    <strong>Status:</strong>
-    <%= @proceso.status %>
-  </p>
-  
-  <p>
-    <strong>Contribuidores:</strong>
-    <%= @proceso.contribuidores %>
-  </p>
-  
-  <p>
-    <strong>Version:</strong>
-    <%= @proceso.version %>
-  </p>
-    <p>
-      <strong>Rectangle:</strong>
-      <%= @proceso.flowchart_xml.scan(/(?=#{"rectangle"})/).count +  @proceso.flowchart_xml.scan(/(?=#{"rounded"})/).count %>
-    </p>
-    <p>
-      <strong>Text in  Rectangle:</strong>
-      <%= (@proceso.flowchart_xml.scan(/value=".*" style=\"shape=rectangle\"/) + @proceso.flowchart_xml.scan(/value=".*" style=\"shape=rounded\"/)).map{|a| a.gsub("value=", "").gsub("\"", "").gsub(" style=shape=rectangle", "").gsub(" style=shape=rounded", "")}.join(", ") %>
-    </p>
-    <p>
-      <strong>Circles:</strong>
-      <%= @proceso.flowchart_xml.scan(/(?=#{"ellipse"})/).count %>
-    </p>
-    <p>
-      <strong>Text in Circles:</strong>
-      <%= @proceso.flowchart_xml.scan(/value=".*" style=\"shape=ellipse\"/).map{|a| a.gsub("value=", "").gsub("\"", "").gsub(" style=shape=ellipse", "")}.join(", ") %>
-    </p>
+  <table width="100%"; style="border:1px solid #dddddd;">
+    <thead>
+      <th> <strong>Nombre:</strong></th>
+      <th><strong>Commits:</strong></th>
+      <th> <strong>Status:</strong></th>
+      <th><strong>Contribuidores:</strong></th>
+      <th><strong>Version:</strong></th>
+      <th><strong>Rectangle:</strong></th>
+      <th><strong>Text in  Rectangle:</strong></th>
+      <th> <strong>Circles:</strong></th>
+      <th> <strong>Text in Circles:</strong></th>
+      <th> <strong>Action</strong></th>
+    </thead>
+    <tbody>
+      <tr>
+        <td> <%= @proceso.nombre %></td>
+        <td> <%= @proceso.commits %></td>
+        <td> <%= @proceso.status %></td>
+        <td> <%= @proceso.contribuidores %></td>
+        <td> <%= @proceso.version %></td>
+        <td><%= @proceso.flowchart_xml.scan(/(?=#{"rectangle"})/).count +  @proceso.flowchart_xml.scan(/(?=#{"rounded"})/).count %></td>
+        <td> <%= (@proceso.flowchart_xml.scan(/value=".*" style=\"shape=rectangle\"/) + @proceso.flowchart_xml.scan(/value=".*" style=\"shape=rounded\"/)).map{|a| a.gsub("value=", "").gsub("\"", "").gsub(" style=shape=rectangle", "").gsub(" style=shape=rounded", "")}.join(", ") %></td>
+        <td><%= @proceso.flowchart_xml.scan(/(?=#{"ellipse"})/).count %></td>
+        <td><%= @proceso.flowchart_xml.scan(/value=".*" style=\"shape=ellipse\"/).map{|a| a.gsub("value=", "").gsub("\"", "").gsub(" style=shape=ellipse", "")}.join(", ") %></td>
+        <td> <%= link_to 'Edit', edit_proceso_path(@proceso) %> |
+          <%= link_to 'Back', procesos_path %></td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- -->
+  <!--<p>-->
+    <!--<strong>Nombre:</strong>-->
+    <!--<%#= @proceso.nombre %>-->
+  <!--</p>-->
+  <!-- -->
+  <!--<p>-->
+    <!--<strong>Commits:</strong>-->
+    <!--<%#= @proceso.commits %>-->
+  <!--</p>-->
+  <!-- -->
+  <!--<p>-->
+    <!--<strong>Status:</strong>-->
+    <!--<%#= @proceso.status %>-->
+  <!--</p>-->
+  <!-- -->
+  <!--<p>-->
+    <!--<strong>Contribuidores:</strong>-->
+    <!--<%#= @proceso.contribuidores %>-->
+  <!--</p>-->
+  <!-- -->
+  <!--<p>-->
+    <!--<strong>Version:</strong>-->
+    <!--<%#= @proceso.version %>-->
+  <!--</p>-->
+    <!--<p>-->
+      <!--<strong>Rectangle:</strong>-->
+      <!--<%#= @proceso.flowchart_xml.scan(/(?=#{"rectangle"})/).count +  @proceso.flowchart_xml.scan(/(?=#{"rounded"})/).count %>-->
+    <!--</p>-->
+    <!--<p>-->
+      <!--<strong>Text in  Rectangle:</strong>-->
+      <!--<%#= (@proceso.flowchart_xml.scan(/value=".*" style=\"shape=rectangle\"/) + @proceso.flowchart_xml.scan(/value=".*" style=\"shape=rounded\"/)).map{|a| a.gsub("value=", "").gsub("\"", "").gsub(" style=shape=rectangle", "").gsub(" style=shape=rounded", "")}.join(", ") %>-->
+    <!--</p>-->
+    <!--<p>-->
+      <!--<strong>Circles:</strong>-->
+      <!--<%#= @proceso.flowchart_xml.scan(/(?=#{"ellipse"})/).count %>-->
+    <!--</p>-->
+    <!--<p>-->
+      <!--<strong>Text in Circles:</strong>-->
+      <!--<%#= @proceso.flowchart_xml.scan(/value=".*" style=\"shape=ellipse\"/).map{|a| a.gsub("value=", "").gsub("\"", "").gsub(" style=shape=ellipse", "")}.join(", ") %>-->
+    <!--</p>-->
 
-  <%= link_to 'Edit', edit_proceso_path(@proceso) %> |
-  <%= link_to 'Back', procesos_path %>
+  <%#= link_to 'Edit', edit_proceso_path(@proceso) %>
+  <!--<%#= link_to 'Back', procesos_path %>-->
 </div>
-  <div id="show-flowcharts" style="display: inline-block; float: right; position: relative;width:70%;vertical-align: top;padding-bottom: 20px;">
+  <div id="show-flowcharts" style="padding-bottom: 20px;">
     <%= @proceso.flowchart_image.html_safe %>
   </div>
 </main>
